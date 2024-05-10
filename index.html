@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./ico/heat.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <title>Dilatação/Contração Térmica</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&family=Barriecito&family=Kanit:wght@400;700&family=Lilita+One&family=Roboto:ital,wght@0,100;0,400;0,700;1,400&family=Signika:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        .container-fluid {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #screen {
+            display: block;
+            margin: 0 auto;
+            position: relative;
+            width: calc(100vw - 42px);
+            height: calc(100vh - 42px);
+            background-color: rgb(179, 176, 176);
+            border-left: 3px solid rgba(206, 203, 203);
+            border-top: 3px solid rgba(206, 203, 203);
+            border-right: 3px solid rgb(102, 101, 101);
+            border-bottom: 3px solid rgb(102, 101, 101);
+        }
+
+        .screen-box-img {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 80px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgb(145, 142, 142);
+            border-left: 3px solid rgb(102, 101, 101);
+            border-top: 3px solid rgb(102, 101, 101);
+            border-right: 3px solid rgba(206, 203, 203);
+            border-bottom: 3px solid rgba(206, 203, 203);
+        }
+
+        .screen-material-img {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            background-color: #fff;
+            width: calc(100% - 40px);
+            height: calc(100% - 160px);
+            border-left: 3px solid rgb(102, 101, 101);
+            border-top: 3px solid rgb(102, 101, 101);
+            border-right: 3px solid rgba(206, 203, 203);
+            border-bottom: 3px solid rgba(206, 203, 203);
+        }
+
+        .bar-temperature-number {
+            position: absolute;
+            top: 100px;
+            left: 40px;
+            display: flex;
+        }
+
+        .bar-temperature {
+            width: 25px;
+            height: 200px;
+            background-color: #0c0c0c;
+            border-left: 3px solid rgb(102, 101, 101);
+            border-top: 3px solid rgb(102, 101, 101);
+            border-right: 3px solid rgba(206, 203, 203);
+            border-bottom: 3px solid rgba(206, 203, 203);
+        }
+
+        .bar-number {
+            max-width: 60px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .bar-number p {
+            display: flex;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        /* .screen-title-div {
+            position: absolute;
+            top: 4px;
+            left: 40%;
+            font-size: 40px;
+            padding-left: 16px;
+            padding-top: 4px;
+            padding-right: 16px;
+            padding-bottom: 4px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            color: rgba(206, 203, 203);
+            -webkit-text-stroke: 2px rgb(102, 101, 101); 
+            text-stroke: 2px rgb(102, 101, 101);
+            background-color: rgb(175, 173, 173);
+            border-left: 3px solid rgba(206, 203, 203);
+            border-top: 3px solid rgba(206, 203, 203);
+            border-right: 3px solid rgb(102, 101, 101);
+            border-bottom: 3px solid rgb(102, 101, 101);
+        } */
+
+        .screen-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 160px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgb(175, 173, 173);
+            border-left: 3px solid rgba(206, 203, 203);
+            border-top: 3px solid rgba(206, 203, 203);
+            border-right: 3px solid rgb(102, 101, 101);
+            border-bottom: 3px solid rgb(102, 101, 101);
+        }
+
+        .screen-menu-data,
+        .screen-menu-graphic,
+        .screen-menu-information,
+        .screen-menu-menu {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .mdi.mdi-cube-outline,
+        .mdi.mdi-pencil-box,
+        .mdi.mdi-chart-areaspline,
+        .mdi.mdi-information,
+        .mdi.mdi-menu {
+            font-size: 20px;
+        }
+
+        .screen-menu-data:hover,
+        .screen-menu-graphic:hover,
+        .screen-menu-information:hover,
+        .screen-menu-menu:hover {
+            background-color: rgb(145, 142, 142);
+        }
+
+        .modal-body-information div {
+            background-color: #fff;
+            font-size: 14px;
+        }
+
+        .menu-resultados-aberto,
+        .menu-dados-aberto {
+            width: 60%;
+            height: auto;
+        }
+
+        .menu-gráficos-1,
+        .menu-gráficos-2 {
+            width: 60%;
+            height: auto;
+            border: 1px solid #000;
+        }
+
+        .graphic {
+            overflow-x: auto;
+        }
+
+        .screen-menu-line {
+            height: 100%;
+            border: 1px solid rgba(206, 203, 203);
+        }
+
+        .screen-inputs {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+        }
+
+        .modal-menu-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 4px;
+            padding-top: 4px;
+            padding-right: 4px;
+            padding-bottom: 4px;
+            background-color: rgb(14, 17, 153);
+        }
+
+        .modal-menu-title span {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .modal-menu-close {
+            padding-left: 4px;
+            padding-right: 4px;
+            background-color: rgb(175, 173, 173);
+            border-left: 1px solid rgba(206, 203, 203);
+            border-top: 1px solid rgba(206, 203, 203);
+            border-right: 1px solid rgb(102, 101, 101);
+            border-bottom: 1px solid rgb(102, 101, 101);
+        }
+
+        .modal-menu-close:hover {
+            background-color: rgb(145, 142, 142);
+        }
+
+        .modal-menu-close span {
+            font-size: 14px;
+            color: #000;
+        }
+
+        select {
+            border-radius: 0;
+            font-size: 14px;
+            padding-left: 4px;
+            border-left: 2px solid rgb(102, 101, 101);
+            border-top: 2px solid rgb(102, 101, 101);
+            border-right: 2px solid rgba(206, 203, 203);
+            border-bottom: 2px solid rgba(206, 203, 203);
+            appearance: none;
+            /* Para remover a seta padrão do select em alguns navegadores */
+            -webkit-appearance: none;
+            /* Para navegadores baseados no motor WebKit, como o Chrome e o Safari */
+        }
+
+        .select-material-div {
+            position: relative;
+            display: flex;
+        }
+
+        .select-material {
+            outline: none;
+            flex: 1;
+        }
+
+        .screen-inputs-menu-down {
+            position: absolute;
+            right: 10px;
+            padding-left: 2px;
+            padding-right: 2px;
+            border-left: 2px solid rgba(206, 203, 203);
+            border-top: 2px solid rgba(206, 203, 203);
+            border-right: 2px solid rgb(102, 101, 101);
+            border-bottom: 2px solid rgb(102, 101, 101);
+        }
+
+        input {
+            border-radius: 0;
+            font-size: 14px;
+            padding-left: 4px;
+            color: #000;
+            outline: none;
+            flex: 1;
+            border-left: 2px solid rgb(102, 101, 101);
+            border-top: 2px solid rgb(102, 101, 101);
+            border-right: 2px solid rgba(206, 203, 203);
+            border-bottom: 2px solid rgba(206, 203, 203);
+        }
+
+        ::placeholder {
+            color: #000;
+        }
+
+        .screen-windth {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+        }
+
+        .screen-windth span {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .modal-content {
+            border-left: 3px solid rgba(206, 203, 203);
+            border-top: 3px solid rgba(206, 203, 203);
+            border-right: 3px solid rgb(102, 101, 101);
+            border-bottom: 3px solid rgb(102, 101, 101);
+        }
+
+        .modal-content,
+        .modal-header,
+        .modal-footer,
+        .modal-footer-data,
+        .group-buttons {
+            border-radius: 0 !important;
+        }
+
+        .modal-body,
+        .modal-footer,
+        .modal-footer-data,
+        .group-buttons {
+            background-color: rgb(175, 173, 173);
+        }
+
+        .modal-footer {
+            padding-top: 0;
+            padding-bottom: 32px;
+            border: none;
+            justify-content: center;
+        }
+
+        .modal-footer-data {
+            padding-top: 16px;
+            padding-bottom: 32px;
+        }
+
+        .modal-footer-data button {
+            font-size: 14px;
+            padding-left: 20px;
+            padding-top: 5px;
+            padding-right: 20px;
+            padding-bottom: 5px;
+            border-left: 3px solid rgba(206, 203, 203);
+            border-top: 3px solid rgba(206, 203, 203);
+            border-right: 3px solid rgb(102, 101, 101);
+            border-bottom: 3px solid rgb(102, 101, 101);
+        }
+
+        .modal-footer button {
+            font-size: 14px;
+            padding-left: 20px;
+            padding-top: 5px;
+            padding-right: 20px;
+            padding-bottom: 5px;
+            border-left: 3px solid rgba(206, 203, 203);
+            border-top: 3px solid rgba(206, 203, 203);
+            border-right: 3px solid rgb(102, 101, 101);
+            border-bottom: 3px solid rgb(102, 101, 101);
+        }
+
+        .group-buttons button {
+            font-size: 14px;
+            width: 24%;
+            padding-left: 20px;
+            padding-top: 5px;
+            padding-right: 20px;
+            padding-bottom: 5px;
+            border-left: 3px solid rgba(206, 203, 203);
+            border-top: 3px solid rgba(206, 203, 203);
+            border-right: 3px solid rgb(102, 101, 101);
+            border-bottom: 3px solid rgb(102, 101, 101);
+        }
+
+        .modal-footer-data button:hover,
+        .modal-footer button:hover,
+        .group-buttons button:hover {
+            background-color: rgb(145, 142, 142);
+            cursor: auto;
+        }
+
+        /* Remover transição do modal fade */
+        .modal.fade .modal-dialog {
+            transition: none;
+            transform: none;
+        }
+
+        #imageMaterial {
+            position: relative;
+        }
+
+        .escreen-inputs-results {
+            background-color: #fff;
+            border-radius: 0;
+            font-size: 14px;
+            padding-left: 4px;
+            color: #000;
+            outline: none;
+            flex: 1;
+            border-left: 2px solid rgb(102, 101, 101);
+            border-top: 2px solid rgb(102, 101, 101);
+            border-right: 2px solid rgba(206, 203, 203);
+            border-bottom: 2px solid rgba(206, 203, 203);
+        }
+
+        @media (max-width: 990px) {
+
+            .menu-resultados-aberto,
+            .menu-dados-aberto {
+                width: 90%;
+                height: auto;
+            }
+
+            .menu-gráficos-1,
+            .menu-gráficos-2 {
+                width: 90%;
+                height: auto;
+                border: 1px solid #000;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .left-div-mb {
+                margin-bottom: 16px;
+            }
+
+            .group-buttons button {
+                width: 45%;
+            }
+
+            .screen-material-img {
+                height: calc(100% - 250px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div id="screen">
+            <div class="screen-box-img">
+                <span class="mdi mdi-cube-outline" id="mdi-cube-outline"></span>
+                <img class="screen-img-box-img" src="" alt="" id="imageMaterialBox">
+            </div>
+            <div class="screen-material-img" id="screen-material-img">
+                <img src="" alt="" id="imageMaterial">
+            </div>
+            <div class="bar-temperature-number">
+                <div class="bar-temperature" id="barTemperature"></div>
+                <div class="bar-number">
+                    <p class="m-0" id="bar-number-p-zero"></p>
+                    <p class="m-0" id="bar-number-p-one"></p>
+                    <p class="m-0" id="bar-number-p-two"></p>
+                    <p class="m-0" id="bar-number-p-three"></p>
+                    <p class="m-0" id="bar-number-p-four"></p>
+                    <p class="m-0" id="bar-number-p-five"></p>
+                    <p class="m-0" id="bar-number-p-six"></p>
+                    <p class="m-0" id="bar-number-p-seven"></p>
+                    <p class="m-0" id="bar-number-p-eight"></p>
+                    <p class="m-0" id="bar-number-p-nine"></p>
+                    <p class="m-0" id="bar-number-p-ten"></p>
+                </div>
+            </div>
+            <!-- <div class="screen-title-div">SIMULADOR</div> -->
+            <div class="screen-menu d-flex justify-content-between">
+                <div class="screen-menu-data">
+                    <!-- Button trigger modal -->
+                    <span class="mdi mdi-pencil-box" data-bs-toggle="modal" data-bs-target="#dataModal"></span>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="dataModal" tabindex="-1" aria-labelledby="dataModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header modal-menu-title">
+                                    <span>Resultados</span>
+                                    <div class="modal-menu-close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span class="mdi mdi-close"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="screen-windth mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Constante c (ºC):</span>
+                                            &nbsp;
+                                            <div class="escreen-inputs-results" id="squareC">Resultado</div>
+                                        </div>
+                                        <div class="screen-windth mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Constante de Resfriamento k:</span>
+                                            &nbsp;
+                                            <div class="escreen-inputs-results" id="squareK">Resultado</div>
+                                        </div>
+                                        <div class="screen-windth mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Coeficiente de Dilatação Superficial
+                                                (ºC<sup>-1</sup>):</span>
+                                            &nbsp;
+                                            <div class="escreen-inputs-results" id="squareAlfa">Resultado</div>
+                                        </div>
+                                        <div class="screen-windth mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Área Inicial
+                                                (cm<sup>2</sup>):</span>
+                                            &nbsp;
+                                            <div class="escreen-inputs-results" id="squareAreaInitial">Resultado</div>
+                                        </div>
+                                        <div class="screen-windth col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Área Final
+                                                (cm<sup>2</sup>):</span>
+                                            &nbsp;
+                                            <div class="escreen-inputs-results" id="squareAreaFinal">Resultado</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer-data d-flex justify-content-center">
+                                    <button type="button" class="col-3" data-bs-dismiss="modal">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="screen-menu-line"></div>
+                <div class="screen-menu-graphic">
+                    <!-- Button trigger modal -->
+                    <span class="mdi mdi-chart-areaspline" data-bs-toggle="modal" data-bs-target="#graphicModal"></span>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="graphicModal" tabindex="-1" aria-labelledby="graphicModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-header modal-menu-title">
+                                    <span>Gráficos</span>
+                                    <div class="modal-menu-close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span class="mdi mdi-close"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div id="containerHighchartsOne"></div>
+                                        <div id="containerHighchartsTwo"></div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="col-3" data-bs-dismiss="modal">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="screen-menu-line"></div>
+                <div class="screen-menu-information">
+                    <!-- Button trigger modal -->
+                    <span class="mdi mdi-information" data-bs-toggle="modal" data-bs-target="#informationModal"></span>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="informationModal" tabindex="-1" aria-labelledby="informationModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header modal-menu-title">
+                                    <span>Bem vindo</span>
+                                    <div class="modal-menu-close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span class="mdi mdi-close"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="modal-body-information">
+                                            <div>
+                                                <p class="p-2 m-0">
+                                                    <strong>Introdução</strong>
+                                                    <br>
+                                                    <br>
+                                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                                                    Consequuntur
+                                                    veritatis beatae suscipit repudiandae, accusantium alias officia? A
+                                                    corrupti, consectetur quas nobis molestias optio eligendi tenetur
+                                                    inventore perspiciatis fuga, consequatur quo.
+                                                    <br>
+                                                    <br>
+                                                    <strong>Funcionalidades</strong>
+                                                    <br>
+                                                    <br>
+                                                    • Lista de diferentes materiais com propriedades específicas
+                                                    (coeficiente de dilatação superficial, densidade, calor específico,
+                                                    etc.).
+                                                    <br>
+                                                    • Campos para inserir o comprimento e altura inicial do material.
+                                                    <br>
+                                                    • Entrada para temperatura inicial e final.
+                                                    <br>
+                                                    • Entrada para a temperatura ambiente.
+                                                    <br>
+                                                    • Exibição da temperatura em tempo real.
+                                                    <br>
+                                                    • Campos para inserir o tempo inicial, tempo final e intervalo de
+                                                    tempo.
+                                                    <br>
+                                                    • Animação em tempo real da dilatação/contração do material.
+                                                    <br>
+                                                    • Gráfico de temperatura em função do tempo.
+                                                    <br>
+                                                    • Gráfico de comprimento em função da temperatura.
+                                                    <br>
+                                                    • Representação visual da temperatura do material em um gráfico de
+                                                    barras.
+                                                    <br>
+                                                    • Mudança dinâmica de cores para indicar variação de temperatura.
+                                                    <br>
+                                                    • Atualização automática dos gráficos e da representação visual
+                                                    conforme
+                                                    os dados são inseridos ou alterados.
+                                                    <br>
+                                                    • Exibição dos resultados finais, como a variação do comprimento em
+                                                    relação à temperatura.
+                                                    <br>
+                                                    • Animação visual do processo de resfriamento e dilatação/contração
+                                                    do
+                                                    material.
+                                                    <br>
+                                                    <br>
+                                                    <strong>Menu Superior</strong>
+                                                    <br>
+                                                    <br>
+                                                    No menu superior é mostrado itens com informações dos resultados e
+                                                    do simulador. Permite ao usuário preencher campos para inciar a
+                                                    simulação e também a análise dos gráficos gerados.
+                                                    <br>
+                                                    <br>
+                                                </p>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <img src="./imagens-simulador/menu.png" alt="">
+                                                </div>
+                                                <p class="p-2 m-0">
+                                                    &nbsp;
+                                                    • Resultados
+                                                    <br>
+                                                    &nbsp;
+                                                    Nesta item você tem acesso aos dados como: Constante que depende das
+                                                    características do objeto e do meio circundante, constante de
+                                                    resfriamento, coeficiente de dilatação superficial, área incial e
+                                                    área final.
+                                                    <br>
+                                                    <br>
+                                                </p>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <img src="./imagens-simulador/menu-resultados.png" alt="">
+                                                </div>
+                                                <br>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <img class="menu-resultados-aberto"
+                                                        src="./imagens-simulador/menu-resultados-aberto.png" alt="">
+                                                </div>
+                                                <p class="p-2 m-0">
+                                                    &nbsp;
+                                                    • Gráficos
+                                                    <br>
+                                                    &nbsp;
+                                                    Nesta item você tem acesso dois tipos de gráficos após inserir os
+                                                    dados inciais. Um é da temperatura em função do tempo e o outro do
+                                                    comprimento em função da temperatura.
+                                                    <br>
+                                                    <br>
+                                                </p>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <img src="./imagens-simulador/menu-gráficos.png" alt="">
+                                                </div>
+                                                <br>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <img class="menu-gráficos-1" src="./imagens-simulador/temperatura-em-funo-do-t.jpeg"
+                                                        alt="">
+                                                </div>
+                                                <br>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <img class="menu-gráficos-2" src="./imagens-simulador/comprimento-em-funo-da-t.jpeg"
+                                                        alt="">
+                                                </div>
+                                                <p class="p-2 m-0">
+                                                    &nbsp;
+                                                    • Informações
+                                                    <br>
+                                                    &nbsp;
+                                                    Nesta item você tem acesso as informações em geral que envolvem a
+                                                    funcionalidade da simulação e entre outras coisas.
+                                                    <br>
+                                                    <br>
+                                                </p>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <img src="./imagens-simulador/menu-informação.png" alt="">
+                                                </div>
+                                                <p class="p-2 m-0">
+                                                    &nbsp;
+                                                    • Campos de Preenchimento da Simulação
+                                                    <br>
+                                                    &nbsp;
+                                                    Nesta item você tem acesso aos campos para preenchimento que
+                                                    envolvem desde a escolha do material até a sua criação na tela.
+                                                    <br>
+                                                    <br>
+                                                </p>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <img src="./imagens-simulador/menu-dados.png" alt="">
+                                                </div>
+                                                <br>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <img class="menu-dados-aberto" src="./imagens-simulador/menu-dados-aberto.png" alt="">
+                                                </div>
+                                                <p class="p-2 m-0"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="col-3" data-bs-dismiss="modal">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="screen-menu-line"></div>
+                <div class="screen-menu-menu">
+                    <!-- Button trigger modal -->
+                    <span class="mdi mdi-menu" data-bs-toggle="modal" data-bs-target="#menuModal"></span>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="menuModal" tabindex="-1" aria-labelledby="menuModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header modal-menu-title">
+                                    <span>Preencha os campos de acordo com o que você necessita</span>
+                                    <div class="modal-menu-close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span class="mdi mdi-close"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div
+                                            class="select-material-div mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <select class="select-material" for="squareMaterial" id="squareMaterial">
+                                                <option selected>Escolha um material...</option>
+                                                <option name="lead" value="0.0029">Chumbo</option>
+                                                <option name="zinc" value="0.0025">Zinco</option>
+                                                <option name="aluminium" value="0.0023">Alumínio</option>
+                                                <option name="brass" value="0.0019">Latão</option>
+                                                <option name="silver" value="0.0018" selected>Prata</option>
+                                                <option name="copper" value="0.0017">Cobre</option>
+                                                <option name="gold" value="0.0001333">Ouro</option>
+                                                <option name="iron" value="0.0012">Ferro</option>
+                                                <option name="concrete" value="0.0012">Concreto</option>
+                                                <option name="steel" value="0.0011">Aço</option>
+                                                <option name="ordinaryGlass" value="0.009">Vidro comum</option>
+                                                <option name="tungsten" value="0.004">Tungstênio</option>
+                                                <option name="pyresGlass" value="0.00032">Vidro pirex</option>
+                                                <option name="diamond" value="0.00012">Diamante</option>
+                                                <option name="quartz" value="0.00005">Quartzo fundido</option>
+                                            </select>
+                                            <div
+                                                class="screen-inputs-menu-down d-flex justify-content-center align-items-end">
+                                                <span class="mdi mdi-menu-down"></span>
+                                            </div>
+                                        </div>
+                                        <div class="screen-windth mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Comprimento (cm):</span>
+                                            &nbsp;
+                                            <input type="number" id="squareWidth" value="500">
+                                        </div>
+                                        <div class="screen-windth mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Altura (cm):</span>
+                                            &nbsp;
+                                            <input type="number" id="squareHeight" value="50">
+                                        </div>
+                                        <div class="screen-windth mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Temperatura 1 (ºC):</span>
+                                            &nbsp;
+                                            <input type="number" id="squareTempInitial" value="55">
+                                        </div>
+                                        <div class="screen-windth mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Temperatura 2 (ºC):</span>
+                                            &nbsp;
+                                            <input type="number" id="squareTempFinal" value="20">
+                                        </div>
+                                        <div class="screen-windth mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Temp. Ambiente (ºC):</span>
+                                            &nbsp;
+                                            <input type="number" id="squareTempRoom" value="-5">
+                                        </div>
+                                        <div class="screen-windth mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Tempo 1
+                                                (h):</span>
+                                            &nbsp;
+                                            <input type="number" id="squareTimeInitial" value="20">
+                                        </div>
+                                        <div class="screen-windth mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Tempo 2
+                                                (h):</span>
+                                            &nbsp;
+                                            <input type="number" id="squareTimeFinal" value="22">
+                                        </div>
+                                        <div class="screen-windth mb-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <span>Tempo Decorrido
+                                                (h):</span>
+                                            &nbsp;
+                                            <input type="number" id="squareTimeDeco" value="10">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="col-3" onclick="create()">OK</button>
+                                    <button type="button" class="col-3" data-bs-dismiss="modal">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row screen-inputs">
+                <div class="btn-toolbar justify-content-between group-buttons" role="toolbar"
+                    aria-label="Toolbar com grupos de botões">
+                    <button type="button" class="left-div-mb" onclick="play()">Começar</button>
+                    <button class="left-div-mb" type="button" onclick="stop()">Parar</button>
+                    <button class="" type="button" onclick="resume()">Continuar</button>
+                    <button class="" type="button" onclick="reset()">Resetar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./calculate_material.js"></script>
+    <script src="./node_modules/nerdamer/all.min.js"></script>
+    <script>
+        let screen = document.getElementById("screen");
+        let screenMaterial = document.getElementById("screen-material-img");
+        let containerHighchartsOne = document.getElementById("containerHighchartsOne");
+
+        // Capturando o id da barra de temperatura
+        let barTemperature = document.getElementById("barTemperature");
+
+        let imageMaterial;
+        let imageMaterialWidth;
+        let imageMaterialHeight;
+        let calcScreenWidth;
+        let calcScreenHeight;
+        let xScale;
+        let yScale;
+        let i = 30;
+        var id = null;
+        var isPaused = false;
+        let reverse = false;
+
+        // Função para criar a imagem do material
+        function create() {
+            let squareMaterial = document.getElementById("squareMaterial")
+            let squareMaterialOption = parseFloat(squareMaterial.options[squareMaterial.selectedIndex].value);
+
+            let squareBeta = squareMaterialOption * 2;
+
+            let squareWidth = parseFloat(document.getElementById("squareWidth").value);
+            let squareHeight = parseFloat(document.getElementById("squareHeight").value);
+            let squareTempInitial = parseFloat(document.getElementById("squareTempInitial").value);
+            let squareTempFinal = parseFloat(document.getElementById("squareTempFinal").value);
+            let squareTempRoom = parseFloat(document.getElementById("squareTempRoom").value);
+            let squareTimeInitial = parseFloat(document.getElementById("squareTimeInitial").value);
+            let squareTimeFinal = parseFloat(document.getElementById("squareTimeFinal").value);
+            let squareTimeDeco = parseFloat(document.getElementById("squareTimeDeco").value);
+
+            let differenceTemperature = squareTempFinal - squareTempRoom;
+            console.log('delta-teste: ' + differenceTemperature);
+
+            let calcTime = parseFloat(squareTimeFinal - squareTimeInitial);
+            console.log('tempo: ' + calcTime);
+
+            let functionC = nerdamer(`solve(${squareTempInitial}=${squareTempRoom} + (c * exp(-k * 0)), c)`);
+            functionC = functionC.symbol.elements[0].multiplier.num.value;
+            console.log('C: ' + functionC);
+
+            if (functionC == 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Não há solução...',
+                    text: 'O valor de c não pode ser igual a zero!'
+                })
+                return
+            } else if (Math.sign(squareTempInitial) == -1 && Math.sign(squareTempRoom) == -1 && squareTempInitial >= squareTempRoom) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Não há solução nos números reais...',
+                    text: 'O valor de T1 precisa ser menor que o de Ta, quando ambos são negativos!'
+                })
+                return
+            } else if (Math.sign(squareTempFinal) == -1 && Math.sign(squareTempRoom) == -1 && squareTempFinal >= squareTempRoom) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Não há solução nos números reais...',
+                    text: 'O valor de T2 precisa ser menor que o de Ta, quando ambos são negativos!'
+                })
+                return
+            } else if (differenceTemperature == 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Não há solução...',
+                    text: 'O valor de T2 não pode ser igual ao de Ta!'
+                })
+                return
+            } else if (Math.sign(functionC) == -1 && Math.sign(differenceTemperature) == 1) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Não há solução nos números reais...',
+                    text: 'Mude o valor de T2 ou de Ta!'
+                })
+                return
+            } else if (Math.sign(functionC) == 1 && Math.sign(differenceTemperature) == -1) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Não há solução nos números reais...',
+                    text: 'Mude o valor de T2 ou de Ta!'
+                })
+                return
+            } else {
+                let functionK = nerdamer(`solve(${squareTempFinal}=${squareTempRoom} + (${functionC} * exp(-k * ${calcTime})), k)`);
+                console.log(functionK);
+                functionK = functionK.symbol.elements[0].multiplier.num.value / functionK.symbol.elements[0].multiplier.den.value;
+                console.log('k: ' + functionK);
+
+                let functionT = nerdamer(`${squareTempRoom} + (${functionC} * exp(-${functionK} * ${squareTimeDeco}))`).evaluate();
+                functionT = functionT.symbol.multiplier.num.value / functionT.symbol.multiplier.den.value;
+                console.log('Temperatura Final: ' + functionT);
+
+                let barNumber = ((functionT - squareTempInitial) / 10).toFixed(2);
+                console.log('numeros da barra: ' + barNumber);
+
+                let deltT = Math.abs(functionT - (squareTempInitial));
+                console.log('deltaT: ' + deltT);
+
+                let calcSquareWidth = (squareWidth * (1 + ((2 * squareMaterialOption) * deltT))).toFixed(2);
+                console.log('comprimento final: ' + calcSquareWidth);
+
+                let calcSquareHeight = (squareHeight * (1 + ((2 * squareMaterialOption) * deltT))).toFixed(2);
+                console.log('altura final: ' + calcSquareHeight);
+
+                let calcSquareAreaInitial = (squareWidth * squareHeight).toFixed(2);
+                console.log('area inicial: ' + calcSquareAreaInitial);
+
+                let calcSquareAreaFinal = (calcSquareWidth * calcSquareHeight).toFixed(2);
+                console.log('area final: ' + calcSquareAreaFinal);
+
+                let squareC = document.getElementById("squareC");
+                squareC.textContent = functionC;
+                let squareK = document.getElementById("squareK");
+                squareK.textContent = functionK.toFixed(4);
+                let squareAlfa = document.getElementById("squareAlfa");
+                squareAlfa.textContent = 2 * squareMaterialOption;
+                let squareAreaInitial = document.getElementById("squareAreaInitial");
+                squareAreaInitial.textContent = calcSquareAreaInitial;
+                let squareAreaFinal = document.getElementById("squareAreaFinal");
+                squareAreaFinal.textContent = calcSquareAreaFinal;
+
+                let cubeMaterial = document.getElementById("mdi-cube-outline").classList;
+                cubeMaterial.add("d-none");
+
+                let containerHighchartsOne = document.getElementById("containerHighchartsOne").classList;
+                containerHighchartsOne.add("mb-3");
+
+                let screenMaterialWidth = screenMaterial.clientWidth;
+                let screenMaterialHeight = screenMaterial.clientHeight;
+
+                calcScreenWidth = (screenMaterialWidth / 2).toFixed(2);
+                calcScreenHeight = (screenMaterialHeight / 2).toFixed(2);
+
+                let imageMaterialBox = document.getElementById("imageMaterialBox");
+                imageMaterial = document.getElementById("imageMaterial");
+
+
+                xScale = (squareWidth / 2).toFixed(2);
+                yScale = (squareHeight / 2).toFixed(2);
+
+                switch (squareMaterialOption) {
+                    case 0.0029:
+                        imageMaterialBox.src = './img/chumbo-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/chumbo-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.0025:
+                        imageMaterialBox.src = './img/zinco-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/zinco-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.0023:
+                        imageMaterialBox.src = './img/aluminio-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/aluminio-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.0019:
+                        imageMaterialBox.src = './img/latão-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/latão-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.0018:
+                        imageMaterialBox.src = './img/prata-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/prata-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.0017:
+                        imageMaterialBox.src = './img/cobre-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/cobre-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.0001333:
+                        imageMaterialBox.src = './img/ouro-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/ouro-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.0012:
+                        imageMaterialBox.src = './img/ferro-2.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/ferro-2.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.0012:
+                        imageMaterialBox.src = './img/concreto-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/concreto-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.0011:
+                        imageMaterialBox.src = './img/aço-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/aço-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.009:
+                        imageMaterialBox.src = './img/vidro-comum-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/vidro-comum-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.004:
+                        imageMaterialBox.src = './img/tungstenio-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/tungstenio-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.00032:
+                        imageMaterialBox.src = './img/vidro-pirex-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/vidro-pirex-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.00012:
+                        imageMaterialBox.src = './img/diamante-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/diamante-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+                    case 0.00005:
+                        imageMaterialBox.src = './img/quartzo-1.jpg';
+                        imageMaterialBox.style.width = "60px";
+                        imageMaterialBox.style.height = "20px";
+                        imageMaterial.src = './img/quartzo-1.jpg';
+                        imageMaterial.style.width = `${squareWidth}px`;
+                        imageMaterial.style.height = `${squareHeight}px`;
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                // Função para calcular o movimento oblíquo
+                function calculateGraphic() {
+                    let dataTimeTempT = [];
+                    let dataTempTLenght = [];
+
+                    let isExpansion = squareTempFinal > squareTempInitial;
+
+                    if (!isExpansion) {
+                        reverse = true;
+                    }
+
+                    if (isExpansion) {
+                        for (let t = 0; t <= squareTimeDeco; t += 0.001) {
+                            let tempT = parseFloat((squareTempRoom + (functionC * Math.exp(-functionK * t))).toFixed(2));
+                            let tempDeltaT = parseFloat((tempT - (squareTempInitial)).toFixed(2));
+                            let lenght = parseFloat((squareWidth * (1 + ((2 * squareMaterialOption) * tempDeltaT))).toFixed(2));
+                            dataTimeTempT.push([t, tempT]);
+                            dataTempTLenght.push([tempT, lenght]);
+                        }
+                    } else {
+                        for (let t = 0; t <= squareTimeDeco; t += 0.001) {
+                            let tempT = parseFloat((squareTempRoom + (functionC * Math.exp(-functionK * t))).toFixed(2));
+                            let tempDeltaT = parseFloat((tempT - (squareTempInitial)).toFixed(2));
+                            let lenght = parseFloat((squareWidth * (1 + ((2 * squareMaterialOption) * tempDeltaT))).toFixed(2));
+                            dataTimeTempT.push([t, tempT]);
+                            dataTempTLenght.push([tempT, lenght]);
+                        }
+                        console.log(dataTempTLenght);
+                    }
+
+                    return { dataTimeTempT, dataTempTLenght, squareTempFinal };
+                }
+
+                let { dataTimeTempT, dataTempTLenght } = calculateGraphic();
+
+                // Crie o gráfico Highcharts
+                Highcharts.chart('containerHighchartsOne', {
+                    title: {
+                        text: 'Temperatura em Função do Tempo'
+                    },
+                    xAxis: {
+                        title: {
+                            text: 'Tempo (h)'
+                        },
+                        gridLineWidth: 1,
+                        gridLineColor: '#ccd6eb',
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Temperatura (ºC)'
+                        },
+                        gridLineWidth: 1,
+                        gridLineColor: '#ccd6eb',
+                    },
+                    series: [{
+                        name: 'Dilatação',
+                        data: dataTimeTempT
+                    }],
+                    tooltip: {
+                        headerFormat: '<b>Tempo: {point.x:.2f} h</b><br>',
+                        pointFormat: '<b>Temperatura: {point.y:.2f} ºC</b>',
+                        shared: true
+                    },
+                    legend: {
+                        enabled: false
+                    }
+                });
+
+                Highcharts.chart('containerHighchartsTwo', {
+                    title: {
+                        text: 'Comprimento em Função da Temperatura'
+                    },
+                    xAxis: {
+                        reversed: reverse,
+                        title: {
+                            text: 'Temperatura (ºC)'
+                        },
+                        gridLineWidth: 1,
+                        gridLineColor: '#ccd6eb',
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Comprimento (cm)'
+                        },
+                        gridLineWidth: 1,
+                        gridLineColor: '#ccd6eb',
+                    },
+                    series: [{
+                        name: 'Dilatação',
+                        data: dataTempTLenght,
+                    }],
+                    tooltip: {
+                        headerFormat: '<b>Temperatura: {point.x:.2f} ºC</b><br>',
+                        pointFormat: '<b>Comprimento: {point.y:.2f} cm</b>',
+                        shared: true
+                    },
+                    legend: {
+                        enabled: false
+                    }
+                });
+
+                function formatNumberWithSuffix(number) {
+                    let absNumber = Math.abs(number);
+                    let suffixes = ['', 'k', 'M', 'B', 'T']; // Adicione mais sufixos conforme necessário
+
+                    // Encontrar o índice do sufixo com base no número de casas decimais
+                    let suffixIndex = Math.floor(Math.log10(absNumber) / 3);
+
+                    // Calcular o valor formatado
+                    let formattedValue = (number / Math.pow(1000, suffixIndex)).toFixed(2);
+
+                    // Adicionar o sufixo ao valor formatado
+                    return `${formattedValue}${suffixes[suffixIndex]}`;
+                }
+
+                if (squareAreaFinal <= squareAreaInitial) {
+                    document.getElementById("bar-number-p-zero").textContent = formatNumberWithSuffix(squareTempInitial + (0 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-one").textContent = formatNumberWithSuffix(squareTempInitial + (1 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-two").textContent = formatNumberWithSuffix(squareTempInitial + (2 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-three").textContent = formatNumberWithSuffix(squareTempInitial + (3 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-four").textContent = formatNumberWithSuffix(squareTempInitial + (4 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-five").textContent = formatNumberWithSuffix(squareTempInitial + (5 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-six").textContent = formatNumberWithSuffix(squareTempInitial + (6 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-seven").textContent = formatNumberWithSuffix(squareTempInitial + (7 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-eight").textContent = formatNumberWithSuffix(squareTempInitial + (8 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-nine").textContent = formatNumberWithSuffix(squareTempInitial + (9 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-ten").textContent = formatNumberWithSuffix(squareTempInitial + (10 * barNumber)) + " ºC";
+                    console.log('c é maior');
+                } else {
+                    document.getElementById("bar-number-p-zero").textContent = formatNumberWithSuffix(squareTempInitial + (10 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-one").textContent = formatNumberWithSuffix(squareTempInitial + (9 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-two").textContent = formatNumberWithSuffix(squareTempInitial + (8 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-three").textContent = formatNumberWithSuffix(squareTempInitial + (7 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-four").textContent = formatNumberWithSuffix(squareTempInitial + (6 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-five").textContent = formatNumberWithSuffix(squareTempInitial + (5 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-six").textContent = formatNumberWithSuffix(squareTempInitial + (4 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-seven").textContent = formatNumberWithSuffix(squareTempInitial + (3 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-eight").textContent = formatNumberWithSuffix(squareTempInitial + (2 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-nine").textContent = formatNumberWithSuffix(squareTempInitial + (1 * barNumber)) + " ºC";
+                    document.getElementById("bar-number-p-ten").textContent = formatNumberWithSuffix(squareTempInitial + (0 * barNumber)) + " ºC";
+                    console.log('c é menor');
+                }
+            }
+        }
+
+        function calculate() {
+            let squareMaterial = document.getElementById("squareMaterial")
+            let squareMaterialOption = parseFloat(squareMaterial.options[squareMaterial.selectedIndex].value);
+
+            let squareWidth = parseFloat(document.getElementById("squareWidth").value);
+            let squareHeight = parseFloat(document.getElementById("squareHeight").value);
+            let squareTempInitial = parseFloat(document.getElementById("squareTempInitial").value);
+            let squareTempFinal = parseFloat(document.getElementById("squareTempFinal").value);
+
+            let squareTempRoom = parseFloat(document.getElementById("squareTempRoom").value);
+            let squareK = parseFloat(document.getElementById("squareK").value);
+            let squareTimeInitial = parseFloat(document.getElementById("squareTimeInitial").value);
+
+            let constK = (Math.log(((squareTempFinal - squareTempRoom) / (squareTempInitial - squareTempRoom))) / (squareTimeInitial)).toFixed(2);
+
+            let squareCalc = (squareWidth * (1 + (squareMaterialOption * (squareTempFinal - squareTempInitial)))).toFixed(2);
+
+            let testando = ((squareCalc - squareWidth) / (squareWidth * squareMaterialOption * (squareTempFinal - squareTempInitial))).toFixed(2);
+
+            let isExpansion = squareTempFinal > squareTempInitial;
+
+            var pos = 0;
+            var pre = 50;
+            var currentPercentage = 0;
+            clearInterval(id);
+            id = setInterval(frame, 240);
+            function frame() {
+                if (!isPaused && isExpansion) {
+                    if (pos == 50) {
+                        clearInterval(id);
+                    } else {
+                        pos += 1;
+                        currentPercentage += 2;
+                        imageMaterial.style.width = imageMaterial.width + (0.1 * pos) + 'px';
+                        imageMaterial.style.height = imageMaterial.height + (0.1 * pos) + 'px';
+                        xScale = (imageMaterial.width / 2).toFixed(2);
+                        yScale = (imageMaterial.height / 2).toFixed(2);
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        barTemperature.style.background = `linear-gradient(to top, red, orange, yellow, lightgreen, lightblue, blue ${currentPercentage}%)`;
+                    }
+                } else if (!isPaused && isExpansion == false) {
+                    if (pre == 0) {
+                        clearInterval(id);
+                    } else {
+                        pre -= 1;
+                        currentPercentage += 2;
+                        imageMaterial.style.width = imageMaterial.width - (0.1 * pre) + 'px';
+                        imageMaterial.style.height = imageMaterial.height - (0.1 * pre) + 'px';
+                        xScale = (imageMaterial.width / 2).toFixed(2);
+                        yScale = (imageMaterial.height / 2).toFixed(2);
+                        imageMaterial.style.left = `${calcScreenWidth - xScale}px`;
+                        imageMaterial.style.top = `${calcScreenHeight - yScale}px`;
+                        barTemperature.style.background = `linear-gradient(to top, blue, lightblue, lightgreen, yellow, orange, red ${currentPercentage}%)`;
+                    }
+                }
+            }
+        }
+
+        // function colorBar() {
+        //     for (let i = 0; i < array.length; i++) {
+        //         const element = array[i];
+
+        //     }
+        // }
+
+        function play() {
+            calculate(); // Chama a função calculate diretamente
+        }
+
+        function stop() {
+            isPaused = true; // Pausa a animação
+        }
+
+        function resume() {
+            isPaused = false; // Continua a animação
+        }
+    </script>
+</body>
+
+</html>
